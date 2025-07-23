@@ -103,13 +103,13 @@ async def process_query(query: str) -> str:
     # Get assistant's response
     assistant_message = response.choices[0].message
     
-
+    
     # Initialize conversation with user query and assistant response
     messages = [
         {"role": "user", "content": query},
         assistant_message,
     ]
-
+    
     # Handle tool calls if present
     if assistant_message.tool_calls:
         # Process each tool call
@@ -119,6 +119,7 @@ async def process_query(query: str) -> str:
                 tool_call.function.name,
                 arguments=json.loads(tool_call.function.arguments),
             )
+            
 
             # Add tool response to conversation
             messages.append(
@@ -128,7 +129,7 @@ async def process_query(query: str) -> str:
                     "content": result.content[0].text,
                 }
             )
-
+        print(result)
         # Get final response from OpenAI with tool results
         final_response = await openai_client.chat.completions.create(
             model=model,
